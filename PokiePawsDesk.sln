@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokiePawsDesk", "PokiePawsDesk\PokiePawsDesk.csproj", "{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {474AF96B-81AC-4C2E-8429-518A05CBDA8D}
+	EndGlobalSection
+EndGlobal
