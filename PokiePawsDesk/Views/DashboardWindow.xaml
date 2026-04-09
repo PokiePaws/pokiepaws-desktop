@@ -1,0 +1,65 @@
+﻿<Window x:Class="PokiePawsDesk.Views.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PokiePaws — Panel magazynu"
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="#1A237E">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="PokiePaws" FontSize="24" FontWeight="Bold"
+                       Foreground="White" HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+
+            <StackPanel Grid.Row="1" Margin="0,16,0,0">
+                <Button x:Name="BtnOrders" Content="📦  Zamówienia" Height="48"
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        FontSize="14" HorizontalContentAlignment="Left" Padding="24,0"
+                        Click="OrdersButton_Click"/>
+
+                <Button x:Name="BtnCatalog" Content="🗂  Katalog produktów" Height="48"
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        FontSize="14" HorizontalContentAlignment="Left" Padding="24,0"
+                        Click="CatalogButton_Click"/>
+
+                <Button x:Name="BtnClinics" Content="🏥  Gabinety" Height="48"
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        FontSize="14" HorizontalContentAlignment="Left" Padding="24,0"
+                        Click="ClinicsButton_Click"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="16,0,16,8">
+                <Separator Background="#3949AB"/>
+                <StackPanel Orientation="Horizontal" Margin="8,8,0,4">
+                    <Ellipse x:Name="ConnectionDot" Width="10" Height="10"
+                             Fill="#FF5252" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="ConnectionText" Text="Offline" Foreground="#AAB"
+                               FontSize="12" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock x:Name="UserEmailText" Text="" Foreground="#AAB"
+                           FontSize="12" Margin="8,0,0,4" TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+
+            <Button Grid.Row="3" Content="🚪  Wyloguj" Height="48"
+                    Background="Transparent" Foreground="#FF5252" BorderThickness="0"
+                    FontSize="14" HorizontalContentAlignment="Left" Padding="24,0"
+                    Click="LogoutButton_Click"/>
+        </Grid>
+
+        <Frame x:Name="MainFrame" Grid.Column="1" Background="#F5F5F5"
+               NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Window>
