@@ -5,24 +5,28 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace PokiePawsDesk.Views
 {
     public partial class ProductsPage : Page
     {
         private readonly ProductService _productService;
-        private ObservableCollection<Product> _products;
-        private List<Product> _lowStockProducts;
+        private ObservableCollection<Product> _products = new();
+        private List<Product> _lowStockProducts = new();
+        private const int LowStockThreshold = 10;
+        private long _warehouseId = 1;
 
         public ProductsPage(ProductService productService)
         {
             InitializeComponent();
             _productService = productService;
-            LoadProducts();
+            LoadData();
         }
 
-        private async void LoadProducts()
+        private async void LoadData()
         {
+            _warehouseId = await _productService.GetMyWarehouseIdAsync();
             var products = await _productService.GetProductsAsync();
             _products = new ObservableCollection<Product>(products);
             ProductsGrid.ItemsSource = _products;
@@ -31,23 +35,25 @@ namespace PokiePawsDesk.Views
 
         private void CheckLowStock()
         {
-            _lowStockProducts = _products.Where(p => p.Stock <= p.LowStockThreshold).ToList();
+            _lowStockProducts = _products.Where(p => p.Amount <= LowStockThreshold).ToList();
+            LowStockGrid.ItemsSource = _lowStockProducts;
 
             if (!_lowStockProducts.Any())
             {
-                LowStockBanner.Visibility = Visibility.Collapsed;
                 DetailsPanelColumn.Width = new GridLength(0);
+                LowStockIndicator.Visibility = Visibility.Collapsed;
                 return;
             }
 
-            LowStockText.Text = $"{_lowStockProducts.Count} produktów ma niski stan magazynowy.";
-            LowStockBanner.Visibility = Visibility.Visible;
+            LowStockIndicatorText.Text = $"{_lowStockProducts.Count} produktów z niskim stanem";
+            LowStockIndicator.Visibility = Visibility.Visible;
+            LowStockSubtitle.Text = $"{_lowStockProducts.Count} produktów wymaga uzupełnienia";
+            DetailsPanelColumn.Width = new GridLength(320);
         }
 
-        private void LowStockDetailsButton_Click(object sender, RoutedEventArgs e)
+        private void LowStockIndicator_Click(object sender, MouseButtonEventArgs e)
         {
-            LowStockGrid.ItemsSource = _lowStockProducts;
-            DetailsPanelColumn.Width = new GridLength(400);
+            DetailsPanelColumn.Width = new GridLength(320);
         }
 
         private void ClosePanelButton_Click(object sender, RoutedEventArgs e)
@@ -55,24 +61,35 @@ namespace PokiePawsDesk.Views
             DetailsPanelColumn.Width = new GridLength(0);
         }
 
-        private void AddProductButton_Click(object sender, RoutedEventArgs e)
+        private async void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
             var newProduct = new Product
             {
-                Id = _products.Count + 1,
+                WarehouseId = _warehouseId,
                 Name = "Nowy produkt",
                 Category = "Inne",
-                Stock = 0,
-                Price = 0,
-                LowStockThreshold = 10
+                Amount = 0,
+                Price = 0
             };
 
-            _products.Add(newProduct);
-            ProductsGrid.SelectedItem = newProduct;
-            ProductsGrid.ScrollIntoView(newProduct);
+            try
+            {
+                var created = await _productService.CreateAsync(newProduct);
+                if (created != null)
+                {
+                    _products.Add(created);
+                    ProductsGrid.SelectedItem = created;
+                    ProductsGrid.ScrollIntoView(created);
+                    CheckLowStock();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Nie udało się dodać produktu.");
+            }
         }
 
-        private void DeleteProductButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteProductButton_Click(object sender, RoutedEventArgs e)
         {
             if (ProductsGrid.SelectedItem is not Product selected)
             {
@@ -80,7 +97,43 @@ namespace PokiePawsDesk.Views
                 return;
             }
 
-            _products.Remove(selected);
+            try
+            {
+                await _productService.DeleteAsync(selected.Id);
+                _products.Remove(selected);
+                CheckLowStock();
+            }
+            catch
+            {
+                MessageBox.Show("Nie udało się usunąć produktu.");
+            }
+        }
+
+        private async void ProductsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            if (e.EditAction != DataGridEditAction.Commit) return;
+            if (e.Row.Item is not Product product) return;
+            if (product.Id == 0) return;
+
+            await Dispatcher.InvokeAsync(async () =>
+            {
+                try
+                {
+                    product.WarehouseId = _warehouseId;
+                    var updated = await _productService.UpdateAsync(product);
+                    if (updated != null)
+                    {
+                        var idx = _products.IndexOf(product);
+                        if (idx >= 0)
+                            _products[idx] = updated;
+                    }
+                    CheckLowStock();
+                }
+                catch
+                {
+                    MessageBox.Show("Nie udało się zapisać zmian.");
+                }
+            });
         }
     }
 }

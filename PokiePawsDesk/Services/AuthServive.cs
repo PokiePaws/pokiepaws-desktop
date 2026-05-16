@@ -1,87 +1,86 @@
 ﻿using CredentialManagement;
-using PokiePawsDesk.Core;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 
 namespace PokiePawsDesk.Services
 {
     public class LoginRequest
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 
     public class LoginResponse
     {
-        public string Token { get; set; }
-        public string Email { get; set; }
-        public string Role { get; set; }
+        public string? Token { get; set; }
+        public string? Email { get; set; }
+        public string? Role { get; set; }
     }
 
     public class AuthService
     {
         private readonly HttpClient _httpClient;
-        private const string BaseUrl = "http://localhost:9090";
         private const string CredentialKey = "PokiePaws_JWT";
 
-        public AuthService()
+        public AuthService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient = httpClient;
         }
 
-        public async Task<LoginResponse> LoginAsync(string email, string password)
+        public async Task<LoginResponse?> LoginAsync(string email, string password)
         {
             try
             {
-                var request = new LoginRequest { Email = email, Password = password };
-                var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/auth/login", request);
+                _httpClient.DefaultRequestHeaders.Authorization = null;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                    SaveToken(result.Token);
-                    AppLogger.LogInfo($"Zalogowano użytkownika: {email}");
-                    return result;
-                }
+                var response = await _httpClient.PostAsJsonAsync("/api/auth/login", new LoginRequest { Email = email, Password = password });
+                if (!response.IsSuccessStatusCode) return null;
 
-                AppLogger.LogWarning($"Nieudana próba logowania dla: {email}");
-                return null;
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                if (result?.Token == null) return null;
+
+                SaveToken(result.Token);
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", result.Token);
+
+                return result;
             }
-            catch (Exception ex)
+            catch
             {
-                AppLogger.LogError("Błąd podczas logowania", ex);
                 return null;
             }
         }
 
         public void SaveToken(string token)
         {
-            var credential = new Credential
+            new Credential
             {
                 Target = CredentialKey,
                 Username = "pokiepaws_user",
                 Password = token,
                 Type = CredentialType.Generic,
                 PersistanceType = PersistanceType.LocalComputer
-            };
-            credential.Save();
+            }.Save();
         }
 
-        public string GetToken()
+        public string? GetToken()
         {
             var credential = new Credential { Target = CredentialKey };
-            if (credential.Load())
-                return credential.Password;
-            return null;
+            return credential.Load() ? credential.Password : null;
+        }
+
+        public void RestoreToken()
+        {
+            var token = GetToken();
+            if (token != null)
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
         public void RemoveToken()
         {
-            AppLogger.LogInfo("Użytkownik wylogowany");
-            var credential = new Credential { Target = CredentialKey };
-            credential.Delete();
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            new Credential { Target = CredentialKey }.Delete();
         }
     }
 }

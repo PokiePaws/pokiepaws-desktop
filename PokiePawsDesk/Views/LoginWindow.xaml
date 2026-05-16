@@ -1,35 +1,59 @@
 ﻿<Window x:Class="PokiePawsDesk.Views.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="PokiePaws — Logowanie"
-        Height="400" Width="450"
+        Title="PokiePaws"
+        Icon="/Assets/logo.png"
+        Width="400" Height="460"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Background="{StaticResource AppBgBrush}"
+        FontFamily="Segoe UI">
 
-    <Grid Background="#F5F5F5">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+    <Grid VerticalAlignment="Center" Margin="36,0">
+        <StackPanel>
 
-            <TextBlock Text="PokiePaws" FontSize="28" FontWeight="Bold"
-                       Foreground="#1A237E" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,24">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,6">
+                    <Image Source="/Assets/logo.png" Width="32" Height="32"
+                           VerticalAlignment="Center" Margin="0,0,8,0"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Pokie" Foreground="#d4585b" FontSize="26" FontWeight="Bold"/>
+                        <Run Text="Paws" Foreground="#335f7d" FontSize="26" FontWeight="Bold"/>
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock Text="Panel pracownika magazynu" FontSize="12"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
 
-            <TextBlock Text="Panel pracownika magazynu" FontSize="13"
-                       Foreground="#666" HorizontalAlignment="Center" Margin="0,0,0,32"/>
+            <Border Background="White" CornerRadius="16" Padding="24,20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000" BlurRadius="16" ShadowDepth="2" Opacity="0.07"/>
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock Text="Zaloguj się" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
+                    <TextBlock Text="Wprowadź dane dostępowe do swojego konta."
+                               FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                               TextWrapping="Wrap" Margin="0,0,0,18"/>
 
-            <TextBlock Text="E-mail" FontSize="13" Foreground="#333" Margin="0,0,0,4"/>
-            <TextBox x:Name="EmailBox" Height="38" Padding="10,8"
-                     FontSize="13" BorderBrush="#CCC" BorderThickness="1"/>
+                    <TextBlock Text="E-mail" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <TextBox x:Name="EmailBox" Padding="12,8" Margin="0,0,0,12"/>
 
-            <TextBlock Text="Hasło" FontSize="13" Foreground="#333" Margin="0,16,0,4"/>
-            <PasswordBox x:Name="PasswordBox" Height="38" Padding="10,8"
-                         FontSize="13" BorderBrush="#CCC" BorderThickness="1"/>
+                    <TextBlock Text="Hasło" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                    <PasswordBox x:Name="PasswordBox" Padding="12,8" Margin="0,0,0,6"/>
 
-            <Button Content="Zaloguj się" Height="42" Margin="0,24,0,0"
-                    Background="#1A237E" Foreground="White" FontSize="14"
-                    FontWeight="SemiBold" BorderThickness="0" Cursor="Hand"
-                    Click="LoginButton_Click"/>
+                    <TextBlock x:Name="ErrorText" Text="" Foreground="#dc2626"
+                               FontSize="12" Margin="0,0,0,12" TextWrapping="Wrap"/>
 
-            <TextBlock x:Name="ErrorText" Foreground="Red" FontSize="12"
-                       HorizontalAlignment="Center" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                    <Button Style="{StaticResource PrimaryBtn}" Content="Zaloguj się"
+                            HorizontalAlignment="Stretch" Height="40"
+                            Click="LoginButton_Click"/>
+                </StackPanel>
+            </Border>
 
         </StackPanel>
     </Grid>

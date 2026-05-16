@@ -22,7 +22,7 @@ namespace PokiePawsDesk.Core
         public static void LogWarning(string message) =>
             Log.Warning(message);
 
-        public static void LogError(string message, Exception ex = null) =>
+        public static void LogError(string message, Exception? ex = null) =>
             Log.Error(ex, message);
 
         public static void Shutdown() =>
