@@ -1,6 +1,7 @@
 ﻿using CredentialManagement;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace PokiePawsDesk.Services
 {
@@ -12,6 +13,7 @@ namespace PokiePawsDesk.Services
 
     public class LoginResponse
     {
+        [JsonPropertyName("accessToken")]
         public string? Token { get; set; }
         public string? Email { get; set; }
         public string? Role { get; set; }

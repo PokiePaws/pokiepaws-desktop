@@ -22,14 +22,13 @@ namespace PokiePawsDesk.Views
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                ErrorText.Text = "Podaj e-mail i hasło.";
+                ErrorText.Text = LanguageService.Get("Login_Error_Empty");
                 return;
             }
 
             try
             {
                 var result = await _authService.LoginAsync(email, password);
-
                 if (result != null)
                 {
                     var dashboard = App.Services.GetRequiredService<DashboardWindow>();
@@ -38,12 +37,12 @@ namespace PokiePawsDesk.Views
                 }
                 else
                 {
-                    ErrorText.Text = "Nieprawidłowy e-mail lub hasło.";
+                    ErrorText.Text = LanguageService.Get("Login_Error_Invalid");
                 }
             }
             catch
             {
-                ErrorText.Text = "Nie można połączyć się z serwerem.";
+                ErrorText.Text = LanguageService.Get("Login_Error_Server");
             }
         }
     }

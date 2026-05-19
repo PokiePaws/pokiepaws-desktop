@@ -1,7 +1,8 @@
 <Page x:Class="PokiePawsDesk.Views.OrdersPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Zamówienia" Background="{StaticResource AppBgBrush}">
+      x:Name="ThisPage"
+      Title="Orders" Background="{StaticResource AppBgBrush}">
 
     <Grid Margin="32">
         <Grid.RowDefinitions>
@@ -12,22 +13,23 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Zamówienia" FontSize="24" FontWeight="Bold"
+        <TextBlock Grid.Row="0" Text="{DynamicResource Orders_Title}" FontSize="24" FontWeight="Bold"
                    Foreground="{StaticResource PrimaryDarkBrush}"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <ComboBox x:Name="StatusFilter" Width="190"
                       SelectionChanged="StatusFilter_SelectionChanged">
-                <ComboBoxItem Content="Wszystkie statusy" IsSelected="True"/>
-                <ComboBoxItem Content="Oczekujące"  Tag="PENDING"/>
-                <ComboBoxItem Content="W trakcie"   Tag="IN_PROGRESS"/>
-                <ComboBoxItem Content="Wysłane"     Tag="SHIPPED"/>
-                <ComboBoxItem Content="Dostarczone" Tag="DELIVERED"/>
-                <ComboBoxItem Content="Odrzucone"   Tag="REJECTED"/>
+                <ComboBoxItem Content="{DynamicResource Orders_AllStatuses}" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource Orders_Pending}"     Tag="PENDING"/>
+                <ComboBoxItem Content="{DynamicResource Orders_InProgress}"  Tag="IN_PROGRESS"/>
+                <ComboBoxItem Content="{DynamicResource Orders_Shipped}"     Tag="SHIPPED"/>
+                <ComboBoxItem Content="{DynamicResource Orders_Delivered}"   Tag="DELIVERED"/>
+                <ComboBoxItem Content="{DynamicResource Orders_Rejected}"    Tag="REJECTED"/>
             </ComboBox>
 
-            <ComboBox x:Name="ClinicFilter" Width="210" Margin="10,0,0,0"
-                      SelectionChanged="ClinicFilter_SelectionChanged">
+            <ComboBox Width="210" Margin="10,0,0,0"
+                      ItemsSource="{Binding ClinicList}"
+                      SelectedItem="{Binding SelectedClinicFilter, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ClinicName}"/>
@@ -47,7 +49,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <DataGrid Grid.Row="0" x:Name="OrdersGrid"
+                <DataGrid Grid.Row="0"
+                          ItemsSource="{Binding FilteredOrders}"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           CanUserSortColumns="True"
                           ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
@@ -83,7 +86,10 @@
 
                     <DataGrid.Columns>
 
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="55" IsReadOnly="True">
+                        <DataGridTextColumn Binding="{Binding Id}" Width="55" IsReadOnly="True">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="ID"/>
+                            </DataGridTextColumn.Header>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -92,7 +98,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="GABINET" Binding="{Binding ClinicName}" Width="170">
+                        <DataGridTextColumn Binding="{Binding ClinicName}" Width="170">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Orders_Col_Clinic}"/>
+                            </DataGridTextColumn.Header>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -101,7 +110,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="PRODUKT" Binding="{Binding Name}" Width="*">
+                        <DataGridTextColumn Binding="{Binding Name}" Width="*">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Orders_Col_Product}"/>
+                            </DataGridTextColumn.Header>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -110,7 +122,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="ILOŚĆ" Binding="{Binding Amount}" Width="70">
+                        <DataGridTextColumn Binding="{Binding Amount}" Width="70">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Orders_Col_Amount}"/>
+                            </DataGridTextColumn.Header>
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -119,7 +134,10 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTemplateColumn Header="STATUS" Width="130" SortMemberPath="Status" IsReadOnly="True">
+                        <DataGridTemplateColumn Width="130" SortMemberPath="Status" IsReadOnly="True">
+                            <DataGridTemplateColumn.Header>
+                                <TextBlock Text="{DynamicResource Orders_Col_Status}"/>
+                            </DataGridTemplateColumn.Header>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="6" Padding="10,4" MinWidth="90"
@@ -133,43 +151,39 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn Header="AKCJE" Width="210" IsReadOnly="True">
+                        <DataGridTemplateColumn Width="210" IsReadOnly="True">
+                            <DataGridTemplateColumn.Header>
+                                <TextBlock Text="{DynamicResource Orders_Col_Actions}"/>
+                            </DataGridTemplateColumn.Header>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal"
                                                 VerticalAlignment="Center" Margin="8,0">
-
-                                        <!-- PENDING: Rozpocznij + Odrzuć -->
-                                        <Button Content="Rozpocznij"
+                                        <Button Content="{DynamicResource Orders_Action_Start}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#dbeafe" Foreground="#1e40af"
                                                 Visibility="{Binding PendingActionsVisibility}"
-                                                Tag="{Binding}"
-                                                Click="StartOrder_Click"
+                                                Command="{Binding DataContext.StartOrderCommand, ElementName=ThisPage}"
+                                                CommandParameter="{Binding}"
                                                 Margin="0,0,6,0"/>
-                                        <Button Content="Odrzuć"
+                                        <Button Content="{DynamicResource Orders_Action_Reject}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#fee2e2" Foreground="#991b1b"
                                                 Visibility="{Binding PendingActionsVisibility}"
-                                                Tag="{Binding}"
-                                                Click="RejectOrder_Click"/>
-
-                                        <!-- IN_PROGRESS: Wyślij -->
-                                        <Button Content="Wyślij zamówienie"
+                                                Command="{Binding DataContext.RejectOrderCommand, ElementName=ThisPage}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="{DynamicResource Orders_Action_Ship}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#ede9fe" Foreground="#5b21b6"
                                                 Visibility="{Binding InProgressActionsVisibility}"
-                                                Tag="{Binding}"
-                                                Click="ShipOrder_Click"/>
-
-                                        <!-- SHIPPED: Potwierdź odbiór -->
-                                        <Button Content="Potwierdź odbiór"
+                                                Command="{Binding DataContext.ShipOrderCommand, ElementName=ThisPage}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="{DynamicResource Orders_Action_Confirm}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#d1fae5" Foreground="#065f46"
                                                 Visibility="{Binding ShippedActionsVisibility}"
-                                                Tag="{Binding}"
-                                                Click="ConfirmOrder_Click"/>
-
+                                                Command="{Binding DataContext.ConfirmOrderCommand, ElementName=ThisPage}"
+                                                CommandParameter="{Binding}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -179,7 +193,7 @@
                 </DataGrid>
 
                 <Border Grid.Row="1" BorderBrush="#e7e5e4" BorderThickness="0,1,0,0" Padding="16,10">
-                    <TextBlock x:Name="OrderCountText" Text="Ładowanie…"
+                    <TextBlock Text="{Binding OrderCountText}"
                                FontSize="12" Foreground="#78716c"/>
                 </Border>
             </Grid>

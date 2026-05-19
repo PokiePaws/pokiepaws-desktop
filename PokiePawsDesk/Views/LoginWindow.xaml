@@ -22,7 +22,7 @@
                         <Run Text="Paws" Foreground="#335f7d" FontSize="26" FontWeight="Bold"/>
                     </TextBlock>
                 </StackPanel>
-                <TextBlock Text="Panel pracownika magazynu" FontSize="12"
+                <TextBlock Text="{DynamicResource Login_Subtitle}" FontSize="12"
                            Foreground="{StaticResource TextSecondaryBrush}"
                            HorizontalAlignment="Center"/>
             </StackPanel>
@@ -32,24 +32,24 @@
                     <DropShadowEffect Color="#000" BlurRadius="16" ShadowDepth="2" Opacity="0.07"/>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="Zaloguj się" FontSize="17" FontWeight="Bold"
+                    <TextBlock Text="{DynamicResource Login_Title}" FontSize="17" FontWeight="Bold"
                                Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
-                    <TextBlock Text="Wprowadź dane dostępowe do swojego konta."
+                    <TextBlock Text="{DynamicResource Login_Description}"
                                FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
                                TextWrapping="Wrap" Margin="0,0,0,18"/>
 
-                    <TextBlock Text="E-mail" FontSize="11" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource Login_Email}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                     <TextBox x:Name="EmailBox" Padding="12,8" Margin="0,0,0,12"/>
 
-                    <TextBlock Text="Hasło" FontSize="11" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource Login_Password}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
                     <PasswordBox x:Name="PasswordBox" Padding="12,8" Margin="0,0,0,6"/>
 
                     <TextBlock x:Name="ErrorText" Text="" Foreground="#dc2626"
                                FontSize="12" Margin="0,0,0,12" TextWrapping="Wrap"/>
 
-                    <Button Style="{StaticResource PrimaryBtn}" Content="Zaloguj się"
+                    <Button Style="{StaticResource PrimaryBtn}" Content="{DynamicResource Login_Button}"
                             HorizontalAlignment="Stretch" Height="40"
                             Click="LoginButton_Click"/>
                 </StackPanel>

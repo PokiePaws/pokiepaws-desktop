@@ -3,6 +3,7 @@ using PokiePawsDesk.Core;
 using PokiePawsDesk.Services;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,6 +22,7 @@ namespace PokiePawsDesk.Views
 
         private Button? _activeNav;
         private int _newOrderCount = 0;
+        private bool _isOnline = true;
 
         public DashboardWindow(AuthService authService, OrderService orderService,
             ProductService productService, ClinicService clinicService,
@@ -35,10 +37,38 @@ namespace PokiePawsDesk.Views
             _httpClient = httpClient;
 
             _activeNav = BtnOverview;
+            UpdateLanguageToggle();
             LoadUserInfo();
-            CheckConnection();
+            _ = CheckConnectionAsync();
             ConnectWebSocket();
             MainFrame.Navigate(new OverviewPage(_orderService, _productService, _clinicService));
+        }
+
+        private void UpdateLanguageToggle()
+        {
+            bool isPl = LanguageService.Instance.CurrentLanguage == "pl";
+            BtnPL.Style = isPl
+                ? (Style)FindResource("PillBtnActive")
+                : (Style)FindResource("PillBtnInactive");
+            BtnEN.Style = isPl
+                ? (Style)FindResource("PillBtnInactive")
+                : (Style)FindResource("PillBtnActive");
+        }
+
+        private void BtnPL_Click(object sender, RoutedEventArgs e)
+        {
+            if (LanguageService.Instance.CurrentLanguage == "pl") return;
+            LanguageService.Instance.SetLanguage("pl");
+            UpdateLanguageToggle();
+            RefreshCurrentPage();
+        }
+
+        private void BtnEN_Click(object sender, RoutedEventArgs e)
+        {
+            if (LanguageService.Instance.CurrentLanguage == "en") return;
+            LanguageService.Instance.SetLanguage("en");
+            UpdateLanguageToggle();
+            RefreshCurrentPage();
         }
 
         private async void LoadUserInfo()
@@ -54,43 +84,46 @@ namespace PokiePawsDesk.Views
             }
             catch
             {
-                UserNameText.Text = "Pracownik magazynu";
+                UserNameText.Text = LanguageService.Get("Nav_RoleName");
             }
         }
 
-        private async void CheckConnection()
+        private async Task CheckConnectionAsync()
         {
             while (true)
             {
+                bool online;
                 try
                 {
-                    var response = await _httpClient.GetAsync("/actuator/health");
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (response.IsSuccessStatusCode)
-                        {
-                            ConnectionDot.Fill = new SolidColorBrush(Color.FromRgb(16, 185, 129));
-                            ConnectionText.Text = "Online";
-                        }
-                        else
-                        {
-                            SetOffline();
-                        }
-                    });
+                    var response = await _httpClient.GetAsync("/api/clinics");
+                    online = response.IsSuccessStatusCode;
                 }
                 catch
                 {
-                    Dispatcher.Invoke(SetOffline);
+                    online = false;
                 }
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (online)
+                    {
+                        ConnectionDot.Fill = new SolidColorBrush(Color.FromRgb(16, 185, 129));
+                        ConnectionText.Text = LanguageService.Get("Connection_Online");
+                    }
+                    else
+                    {
+                        ConnectionDot.Fill = new SolidColorBrush(Color.FromRgb(220, 38, 38));
+                        ConnectionText.Text = LanguageService.Get("Connection_Offline");
+                    }
+
+                    if (online && !_isOnline)
+                        RefreshCurrentPage();
+
+                    _isOnline = online;
+                });
 
                 await Task.Delay(30000);
             }
-        }
-
-        private void SetOffline()
-        {
-            ConnectionDot.Fill = new SolidColorBrush(Color.FromRgb(220, 38, 38));
-            ConnectionText.Text = "Offline";
         }
 
         private void ConnectWebSocket()
@@ -110,7 +143,22 @@ namespace PokiePawsDesk.Views
                 _newOrderCount++;
                 OrdersBadge.Visibility = Visibility.Visible;
                 OrdersBadgeText.Text = _newOrderCount.ToString();
-                NotificationText.Text = "Nowe zamówienie od gabinetu!";
+
+                string text = LanguageService.Get("Notification_NewOrder");
+                try
+                {
+                    using var doc = JsonDocument.Parse(json);
+                    var root = doc.RootElement;
+                    if (root.TryGetProperty("clinicName", out var clinic) &&
+                        clinic.GetString() is string clinicName &&
+                        !string.IsNullOrWhiteSpace(clinicName))
+                    {
+                        text = $"{LanguageService.Get("Notification_NewOrderFrom")} {clinicName}";
+                    }
+                }
+                catch { }
+
+                NotificationText.Text = text;
                 NotificationBanner.Visibility = Visibility.Visible;
             });
         }
@@ -118,6 +166,18 @@ namespace PokiePawsDesk.Views
         private void DismissNotification_Click(object sender, RoutedEventArgs e)
         {
             NotificationBanner.Visibility = Visibility.Collapsed;
+        }
+
+        private void RefreshCurrentPage()
+        {
+            if (_activeNav == BtnOverview)
+                MainFrame.Navigate(new OverviewPage(_orderService, _productService, _clinicService));
+            else if (_activeNav == BtnOrders)
+                MainFrame.Navigate(new OrdersPage(_orderService, _clinicService));
+            else if (_activeNav == BtnProducts)
+                MainFrame.Navigate(new ProductsPage(_productService));
+            else if (_activeNav == BtnClinics)
+                MainFrame.Navigate(new ClinicsPage(_clinicService, _orderService));
         }
 
         private void SetActive(Button btn)
@@ -151,7 +211,7 @@ namespace PokiePawsDesk.Views
         private void BtnClinics_Click(object sender, RoutedEventArgs e)
         {
             SetActive(BtnClinics);
-            MainFrame.Navigate(new ClinicsPage(_clinicService));
+            MainFrame.Navigate(new ClinicsPage(_clinicService, _orderService));
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)

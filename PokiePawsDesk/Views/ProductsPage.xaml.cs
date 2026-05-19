@@ -1,54 +1,23 @@
 ﻿using PokiePawsDesk.Models;
 using PokiePawsDesk.Services;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using PokiePawsDesk.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace PokiePawsDesk.Views
 {
     public partial class ProductsPage : Page
     {
-        private readonly ProductService _productService;
-        private ObservableCollection<Product> _products = new();
-        private List<Product> _lowStockProducts = new();
-        private const int LowStockThreshold = 10;
-        private long _warehouseId = 1;
+        private readonly ProductsViewModel _viewModel;
+        private DispatcherTimer? _notificationTimer;
 
         public ProductsPage(ProductService productService)
         {
             InitializeComponent();
-            _productService = productService;
-            LoadData();
-        }
-
-        private async void LoadData()
-        {
-            _warehouseId = await _productService.GetMyWarehouseIdAsync();
-            var products = await _productService.GetProductsAsync();
-            _products = new ObservableCollection<Product>(products);
-            ProductsGrid.ItemsSource = _products;
-            CheckLowStock();
-        }
-
-        private void CheckLowStock()
-        {
-            _lowStockProducts = _products.Where(p => p.Amount <= LowStockThreshold).ToList();
-            LowStockGrid.ItemsSource = _lowStockProducts;
-
-            if (!_lowStockProducts.Any())
-            {
-                DetailsPanelColumn.Width = new GridLength(0);
-                LowStockIndicator.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            LowStockIndicatorText.Text = $"{_lowStockProducts.Count} produktów z niskim stanem";
-            LowStockIndicator.Visibility = Visibility.Visible;
-            LowStockSubtitle.Text = $"{_lowStockProducts.Count} produktów wymaga uzupełnienia";
-            DetailsPanelColumn.Width = new GridLength(320);
+            _viewModel = new ProductsViewModel(productService);
+            DataContext = _viewModel;
         }
 
         private void LowStockIndicator_Click(object sender, MouseButtonEventArgs e)
@@ -61,27 +30,28 @@ namespace PokiePawsDesk.Views
             DetailsPanelColumn.Width = new GridLength(0);
         }
 
+        private void ShowNotification(string message)
+        {
+            _notificationTimer?.Stop();
+            InlineNotificationText.Text = message;
+            InlineNotification.Visibility = Visibility.Visible;
+
+            _notificationTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(3) };
+            _notificationTimer.Tick += (s, e) =>
+            {
+                InlineNotification.Visibility = Visibility.Collapsed;
+                _notificationTimer!.Stop();
+            };
+            _notificationTimer.Start();
+        }
+
         private async void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            var newProduct = new Product
-            {
-                WarehouseId = _warehouseId,
-                Name = "Nowy produkt",
-                Category = "Inne",
-                Amount = 0,
-                Price = 0
-            };
-
             try
             {
-                var created = await _productService.CreateAsync(newProduct);
-                if (created != null)
-                {
-                    _products.Add(created);
-                    ProductsGrid.SelectedItem = created;
-                    ProductsGrid.ScrollIntoView(created);
-                    CheckLowStock();
-                }
+                await _viewModel.AddProductAsync();
+                if (_viewModel.SelectedProduct != null)
+                    ProductsGrid.ScrollIntoView(_viewModel.SelectedProduct);
             }
             catch
             {
@@ -89,19 +59,46 @@ namespace PokiePawsDesk.Views
             }
         }
 
+        private async void DeliveryButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.SelectedProduct == null)
+            {
+                ShowNotification(LanguageService.Get("Products_Delivery_NoSelection"));
+                return;
+            }
+
+            var dialog = new DeliveryDialog(_viewModel.SelectedProduct.Name ?? string.Empty)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                await _viewModel.ApplyDeliveryAsync(dialog.DeliveredQuantity);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    LanguageService.Get("Products_Delivery_Error"),
+                    LanguageService.Get("Error_Title"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
         private async void DeleteProductButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ProductsGrid.SelectedItem is not Product selected)
+            if (_viewModel.SelectedProduct == null)
             {
-                MessageBox.Show("Wybierz produkt do usunięcia.");
+                ShowNotification(LanguageService.Get("Products_Delivery_NoSelection"));
                 return;
             }
 
             try
             {
-                await _productService.DeleteAsync(selected.Id);
-                _products.Remove(selected);
-                CheckLowStock();
+                await _viewModel.DeleteProductAsync();
             }
             catch
             {
@@ -109,31 +106,23 @@ namespace PokiePawsDesk.Views
             }
         }
 
-        private async void ProductsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        private void ProductsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
             if (e.EditAction != DataGridEditAction.Commit) return;
             if (e.Row.Item is not Product product) return;
             if (product.Id == 0) return;
 
-            await Dispatcher.InvokeAsync(async () =>
+            Dispatcher.BeginInvoke(new Action(async () =>
             {
                 try
                 {
-                    product.WarehouseId = _warehouseId;
-                    var updated = await _productService.UpdateAsync(product);
-                    if (updated != null)
-                    {
-                        var idx = _products.IndexOf(product);
-                        if (idx >= 0)
-                            _products[idx] = updated;
-                    }
-                    CheckLowStock();
+                    await _viewModel.UpdateProductAsync(product);
                 }
                 catch
                 {
-                    MessageBox.Show("Nie udało się zapisać zmian.");
+                    MessageBox.Show("Nie udało się zapisać zmian. Sprawdź czy nazwa produktu jest unikalna.");
                 }
-            });
+            }));
         }
     }
 }

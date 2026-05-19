@@ -10,6 +10,57 @@
         FontFamily="Segoe UI"
         Closed="Window_Closed">
 
+    <Window.Resources>
+        <Style x:Key="PillBtnActive" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1c1917"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="6" ShadowDepth="1"
+                                              Opacity="0.12" Color="#000000"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PillBtnInactive" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#78716c"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#e5e5e3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="248"/>
@@ -27,23 +78,41 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="16,20,16,14" Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <Image Source="/Assets/logo.png" Width="28" Height="28"
-                           VerticalAlignment="Center" Margin="0,0,8,0"
-                           RenderOptions.BitmapScalingMode="HighQuality"/>
-                    <TextBlock VerticalAlignment="Center">
-                        <Run Text="Pokie" Foreground="#d4585b" FontSize="18" FontWeight="Bold"/>
-                        <Run Text="Paws" Foreground="#335f7d" FontSize="18" FontWeight="Bold"/>
-                    </TextBlock>
-                </StackPanel>
+                <Grid Grid.Row="0" Margin="16,20,16,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="/Assets/logo.png" Width="28" Height="28"
+                               VerticalAlignment="Center" Margin="0,0,8,0"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock VerticalAlignment="Center">
+                            <Run Text="Pokie" Foreground="#d4585b" FontSize="18" FontWeight="Bold"/>
+                            <Run Text="Paws" Foreground="#335f7d" FontSize="18" FontWeight="Bold"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Background="#f0f0ef" CornerRadius="8"
+                            BorderBrush="#e7e5e4" BorderThickness="1"
+                            VerticalAlignment="Center" Padding="2">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="BtnPL" Content="PL"
+                                    Style="{StaticResource PillBtnActive}"
+                                    Click="BtnPL_Click"/>
+                            <Button x:Name="BtnEN" Content="EN"
+                                    Style="{StaticResource PillBtnInactive}"
+                                    Click="BtnEN_Click"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
                 <Border Grid.Row="1" Margin="12,0,12,14"
                         Background="#ecfdf5" CornerRadius="10" Padding="12,8"
                         BorderBrush="#a7f3d0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="ROLA" FontSize="9" FontWeight="Bold" Foreground="#059669"/>
-                        <TextBlock Text="Pracownik Magazynu" FontSize="13" FontWeight="SemiBold"
+                        <TextBlock Text="{DynamicResource Nav_Role}" FontSize="9" FontWeight="Bold" Foreground="#059669"/>
+                        <TextBlock Text="{DynamicResource Nav_RoleName}" FontSize="13" FontWeight="SemiBold"
                                    Foreground="#059669"/>
                     </StackPanel>
                 </Border>
@@ -54,7 +123,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE80F;"
                                        FontSize="15" Width="24" VerticalAlignment="Center"/>
-                            <TextBlock Text="Przegląd" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            <TextBlock Text="{DynamicResource Nav_Overview}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                         </StackPanel>
                     </Button>
 
@@ -63,7 +132,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8A1;"
                                        FontSize="15" Width="24" VerticalAlignment="Center"/>
-                            <TextBlock Text="Zamówienia" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            <TextBlock Text="{DynamicResource Nav_Orders}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                             <Border x:Name="OrdersBadge" Background="#dc2626" CornerRadius="10"
                                     Padding="6,1" Margin="8,0,0,0" Visibility="Collapsed"
                                     VerticalAlignment="Center">
@@ -78,7 +147,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8B9;"
                                        FontSize="15" Width="24" VerticalAlignment="Center"/>
-                            <TextBlock Text="Katalog produktów" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            <TextBlock Text="{DynamicResource Nav_Products}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                         </StackPanel>
                     </Button>
 
@@ -87,7 +156,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEAF3;"
                                        FontSize="15" Width="24" VerticalAlignment="Center"/>
-                            <TextBlock Text="Gabinety" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            <TextBlock Text="{DynamicResource Nav_Clinics}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -98,20 +167,18 @@
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                             <Ellipse x:Name="ConnectionDot" Width="8" Height="8"
                                      Fill="#10b981" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="ConnectionText" Text="Online"
+                            <TextBlock x:Name="ConnectionText"
                                        FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
                                        Margin="6,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
-
-                        <TextBlock x:Name="UserNameText" Text="Ładowanie..."
+                        <TextBlock x:Name="UserNameText" Text=""
                                    FontSize="14" FontWeight="SemiBold"
                                    Foreground="{StaticResource TextPrimaryBrush}"
                                    Margin="0,8,0,2"/>
                         <TextBlock x:Name="UserEmailText" Text=""
                                    FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
                                    Margin="0,0,0,12" TextTrimming="CharacterEllipsis"/>
-
-                        <Button Style="{StaticResource GhostBtn}" Content="Wyloguj się"
+                        <Button Style="{StaticResource GhostBtn}" Content="{DynamicResource Nav_Logout}"
                                 HorizontalAlignment="Stretch"
                                 Click="LogoutButton_Click"/>
                     </StackPanel>
@@ -139,7 +206,6 @@
                                    FontSize="14" Foreground="#1e40af"
                                    VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <TextBlock x:Name="NotificationText"
-                                   Text="Nowe zamówienie od gabinetu!"
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="#1e40af" VerticalAlignment="Center"/>
                     </StackPanel>
@@ -151,8 +217,7 @@
                 </Grid>
             </Border>
 
-            <Frame Grid.Row="1" x:Name="MainFrame"
-                   NavigationUIVisibility="Hidden"/>
+            <Frame Grid.Row="1" x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
         </Grid>
     </Grid>
 </Window>

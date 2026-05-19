@@ -1,7 +1,10 @@
 ﻿using PokiePawsDesk.Core;
 using PokiePawsDesk.Models;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace PokiePawsDesk.Services
 {
@@ -29,6 +32,11 @@ namespace PokiePawsDesk.Services
             }
             catch { }
 
+            return _db.Clinics.ToList();
+        }
+
+        public List<Clinic> GetLocalClinics()
+        {
             return _db.Clinics.ToList();
         }
 

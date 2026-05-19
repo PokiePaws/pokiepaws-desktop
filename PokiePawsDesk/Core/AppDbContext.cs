@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PokiePawsDesk.Models;
-using System.Threading.Tasks;
 
 namespace PokiePawsDesk.Core
 {
@@ -13,7 +12,8 @@ namespace PokiePawsDesk.Core
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             SQLitePCL.Batteries_V2.Init();
-            options.UseSqlite("Data Source=pokiepaws.db;Password=PokiePaws2026!");
+            var key = DbKeyProvider.GetOrCreateKey();
+            options.UseSqlite($"Data Source={DbKeyProvider.DbPath};Password={key}");
         }
 
         public async Task ClearAllDataAsync()

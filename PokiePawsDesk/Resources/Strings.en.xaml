@@ -1,0 +1,107 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <s:String x:Key="Nav_Overview">Overview</s:String>
+    <s:String x:Key="Nav_Orders">Orders</s:String>
+    <s:String x:Key="Nav_Products">Product Catalog</s:String>
+    <s:String x:Key="Nav_Clinics">Clinics</s:String>
+    <s:String x:Key="Nav_Role">ROLE</s:String>
+    <s:String x:Key="Nav_RoleName">Warehouse Worker</s:String>
+    <s:String x:Key="Nav_Logout">Log out</s:String>
+    <s:String x:Key="Nav_Language">PL</s:String>
+
+    <s:String x:Key="Connection_Online">Online</s:String>
+    <s:String x:Key="Connection_Offline">Offline</s:String>
+    <s:String x:Key="Notification_NewOrder">New order from clinic!</s:String>
+    <s:String x:Key="Notification_NewOrderFrom">New order from:</s:String>
+
+    <s:String x:Key="Login_Subtitle">Warehouse Worker Panel</s:String>
+    <s:String x:Key="Login_Title">Log in</s:String>
+    <s:String x:Key="Login_Description">Enter your account credentials.</s:String>
+    <s:String x:Key="Login_Email">E-mail</s:String>
+    <s:String x:Key="Login_Password">Password</s:String>
+    <s:String x:Key="Login_Button">Log in</s:String>
+    <s:String x:Key="Login_Error_Empty">Enter your email and password.</s:String>
+    <s:String x:Key="Login_Error_Invalid">Invalid email or password.</s:String>
+    <s:String x:Key="Login_Error_Server">Cannot connect to the server.</s:String>
+
+    <s:String x:Key="Overview_Title">Overview</s:String>
+    <s:String x:Key="Overview_Subtitle">Welcome back. Here is the current warehouse status.</s:String>
+    <s:String x:Key="Overview_PendingOrders">Pending orders</s:String>
+    <s:String x:Key="Overview_Products">Products in catalog</s:String>
+    <s:String x:Key="Overview_LowStock">Low stock</s:String>
+    <s:String x:Key="Overview_ActiveClinics">Active clinics</s:String>
+    <s:String x:Key="Overview_NewOrders">New orders</s:String>
+
+    <s:String x:Key="Orders_Title">Orders</s:String>
+    <s:String x:Key="Orders_AllStatuses">All statuses</s:String>
+    <s:String x:Key="Orders_AllClinics">All clinics</s:String>
+    <s:String x:Key="Orders_Pending">Pending</s:String>
+    <s:String x:Key="Orders_InProgress">In progress</s:String>
+    <s:String x:Key="Orders_Shipped">Shipped</s:String>
+    <s:String x:Key="Orders_Delivered">Delivered</s:String>
+    <s:String x:Key="Orders_Rejected">Rejected</s:String>
+    <s:String x:Key="Orders_Col_Clinic">CLINIC</s:String>
+    <s:String x:Key="Orders_Col_Product">PRODUCT</s:String>
+    <s:String x:Key="Orders_Col_Amount">QUANTITY</s:String>
+    <s:String x:Key="Orders_Col_Status">STATUS</s:String>
+    <s:String x:Key="Orders_Col_Actions">ACTIONS</s:String>
+    <s:String x:Key="Orders_Action_Start">Start</s:String>
+    <s:String x:Key="Orders_Action_Reject">Reject</s:String>
+    <s:String x:Key="Orders_Action_Ship">Ship order</s:String>
+    <s:String x:Key="Orders_Action_Confirm">Confirm delivery</s:String>
+    <s:String x:Key="Orders_Loading">Loading…</s:String>
+    <s:String x:Key="Orders_CountSuffix">orders</s:String>
+    <s:String x:Key="Orders_RejectConfirm">Are you sure you want to reject order</s:String>
+    <s:String x:Key="Orders_RejectTitle">Reject order</s:String>
+    <s:String x:Key="Orders_Error">Failed to update order status.</s:String>
+    <s:String x:Key="Error_Title">Error</s:String>
+
+    <s:String x:Key="Products_Title">Product Catalog</s:String>
+    <s:String x:Key="Products_Col_Name">NAME</s:String>
+    <s:String x:Key="Products_Col_Category">CATEGORY</s:String>
+    <s:String x:Key="Products_Col_Amount">STOCK</s:String>
+    <s:String x:Key="Products_Col_Price">PRICE</s:String>
+    <s:String x:Key="Products_Col_Status">STATUS</s:String>
+    <s:String x:Key="Products_Col_ExpiryDate">EXPIRY</s:String>
+    <s:String x:Key="Products_Col_Description">DESCRIPTION</s:String>
+    <s:String x:Key="Products_Col_Unit">UNIT</s:String>
+    <s:String x:Key="Products_Add">Add product</s:String>
+    <s:String x:Key="Products_Delete">Delete product</s:String>
+    <s:String x:Key="Products_Delivery">Delivery</s:String>
+    <s:String x:Key="Products_LowStock_Title">Low stock</s:String>
+    <s:String x:Key="Products_LowStock_Info">Products below 10 units require replenishment.</s:String>
+    <s:String x:Key="Products_LowStock_Badge">products with low stock</s:String>
+    <s:String x:Key="Products_LowStock_Subtitle">products need restocking</s:String>
+    <s:String x:Key="Products_Delivery_Title">Register delivery</s:String>
+    <s:String x:Key="Products_Delivery_Product">Product:</s:String>
+    <s:String x:Key="Products_Delivery_Qty">Delivered quantity:</s:String>
+    <s:String x:Key="Products_Delivery_Confirm">Confirm</s:String>
+    <s:String x:Key="Products_Delivery_Cancel">Cancel</s:String>
+    <s:String x:Key="Products_Delivery_NoSelection">Select a product to register a delivery.</s:String>
+    <s:String x:Key="Products_Delivery_InvalidQty">Enter a whole number greater than zero.</s:String>
+    <s:String x:Key="Products_Delivery_Error">Failed to save delivery.</s:String>
+
+    <s:String x:Key="Clinics_Title">Clinics</s:String>
+    <s:String x:Key="Clinics_Details_Title">Clinic Details</s:String>
+    <s:String x:Key="Clinics_Select">Select a clinic from the list on the left</s:String>
+    <s:String x:Key="Clinics_OrderHistory">Order History</s:String>
+    <s:String x:Key="Clinics_Detail_Name">Clinic name</s:String>
+    <s:String x:Key="Clinics_Detail_City">City</s:String>
+    <s:String x:Key="Clinics_Detail_Street">Street</s:String>
+    <s:String x:Key="Clinics_Detail_Hours">Working hours</s:String>
+    <s:String x:Key="Clinics_Detail_Status">Status</s:String>
+    <s:String x:Key="Clinics_Col_Product">PRODUCT</s:String>
+    <s:String x:Key="Clinics_Col_Amount">QUANTITY</s:String>
+    <s:String x:Key="Clinics_Col_Status">STATUS</s:String>
+
+    <s:String x:Key="Status_Pending">Pending</s:String>
+    <s:String x:Key="Status_InProgress">In progress</s:String>
+    <s:String x:Key="Status_Shipped">Shipped</s:String>
+    <s:String x:Key="Status_Delivered">Delivered</s:String>
+    <s:String x:Key="Status_Rejected">Rejected</s:String>
+    <s:String x:Key="Clinic_Active">Active</s:String>
+    <s:String x:Key="Clinic_Suspended">Suspended</s:String>
+
+</ResourceDictionary>

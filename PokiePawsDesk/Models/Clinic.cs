@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using System.Windows.Media;
+using PokiePawsDesk.Services;
 
 namespace PokiePawsDesk.Models
 {
@@ -13,7 +14,7 @@ namespace PokiePawsDesk.Models
         public bool Active { get; set; }
 
         [JsonIgnore]
-        public string StatusText => Active ? "Aktywny" : "Zawieszony";
+        public string StatusText => Active ? LanguageService.Get("Clinic_Active") : LanguageService.Get("Clinic_Suspended");
 
         [JsonIgnore]
         public Brush StatusBadgeBrush => Active

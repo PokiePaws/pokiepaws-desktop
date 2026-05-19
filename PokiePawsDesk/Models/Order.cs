@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Media;
+using PokiePawsDesk.Services;
 
 namespace PokiePawsDesk.Models
 {
@@ -21,11 +22,11 @@ namespace PokiePawsDesk.Models
         [JsonIgnore]
         public string StatusLabel => Status switch
         {
-            "PENDING" => "Oczekujące",
-            "IN_PROGRESS" => "W trakcie",
-            "SHIPPED" => "Wysłane",
-            "DELIVERED" => "Dostarczone",
-            "REJECTED" => "Odrzucone",
+            "PENDING" => LanguageService.Get("Status_Pending"),
+            "IN_PROGRESS" => LanguageService.Get("Status_InProgress"),
+            "SHIPPED" => LanguageService.Get("Status_Shipped"),
+            "DELIVERED" => LanguageService.Get("Status_Delivered"),
+            "REJECTED" => LanguageService.Get("Status_Rejected"),
             _ => Status ?? "—"
         };
 

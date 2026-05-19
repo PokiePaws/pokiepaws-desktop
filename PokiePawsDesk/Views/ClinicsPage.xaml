@@ -3,6 +3,10 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Gabinety" Background="{StaticResource AppBgBrush}">
 
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Page.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="320"/>
@@ -16,7 +20,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Gabinety" FontSize="24" FontWeight="Bold"
+            <TextBlock Grid.Row="0" Text="{DynamicResource Clinics_Title}" FontSize="24" FontWeight="Bold"
                        Foreground="{StaticResource PrimaryDarkBrush}"/>
 
             <Border Grid.Row="2" Background="White" CornerRadius="16"
@@ -24,9 +28,8 @@
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.06" Color="#000000"/>
                 </Border.Effect>
-
-                <ListBox x:Name="ClinicsList"
-                         SelectionChanged="ClinicsList_SelectionChanged"
+                <ListBox ItemsSource="{Binding Clinics}"
+                         SelectedItem="{Binding SelectedClinic, Mode=TwoWay}"
                          BorderThickness="0" Background="Transparent"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemContainerStyle>
@@ -58,7 +61,6 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
                                 <TextBlock Grid.Row="0" Grid.Column="0"
                                            Text="{Binding ClinicName}"
                                            FontSize="14" FontWeight="SemiBold"
@@ -86,23 +88,165 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Szczegóły gabinetu" FontSize="24" FontWeight="Bold"
+            <TextBlock Grid.Row="0" Text="{DynamicResource Clinics_Details_Title}" FontSize="24" FontWeight="Bold"
                        Foreground="{StaticResource PrimaryDarkBrush}"/>
 
-            <Border Grid.Row="2" x:Name="DetailsCard" Background="White" CornerRadius="16"
+            <Border Grid.Row="2" Background="White" CornerRadius="16"
                     BorderBrush="#e7e5e4" BorderThickness="1" Padding="28">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.06" Color="#000000"/>
                 </Border.Effect>
-
-                <StackPanel x:Name="DetailsContent">
-                    <TextBlock Text="Wybierz gabinet z listy po lewej stronie"
+                <Grid>
+                    <TextBlock Text="{DynamicResource Clinics_Select}"
                                FontSize="14" Foreground="#a8a29e"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                               Margin="0,40,0,0"/>
-                </StackPanel>
+                               HorizontalAlignment="Center" Margin="0,8,0,0"
+                               Visibility="{Binding IsClinicNotSelected, Converter={StaticResource BoolToVis}}"/>
+
+                    <StackPanel Visibility="{Binding IsClinicSelected, Converter={StaticResource BoolToVis}}">
+                        <Border BorderBrush="#f5f5f4" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,16" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Clinics_Detail_Name}"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#78716c"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding SelectedClinic.ClinicName}"
+                                           FontSize="15" Foreground="#1c1917"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="#f5f5f4" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,16" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Clinics_Detail_City}"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#78716c"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding SelectedClinic.City}"
+                                           FontSize="15" Foreground="#1c1917"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="#f5f5f4" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,16" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Clinics_Detail_Street}"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#78716c"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding SelectedClinic.Street}"
+                                           FontSize="15" Foreground="#1c1917"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="#f5f5f4" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,16" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Clinics_Detail_Hours}"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="#78716c"
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding SelectedClinic.WorkingHours}"
+                                           FontSize="15" Foreground="#1c1917"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Clinics_Detail_Status}"
+                                       FontSize="11" FontWeight="SemiBold" Foreground="#78716c"
+                                       Margin="0,0,0,6"/>
+                            <Border CornerRadius="20" Padding="12,4"
+                                    HorizontalAlignment="Left"
+                                    Background="{Binding SelectedClinic.StatusBadgeBrush}">
+                                <TextBlock Text="{Binding SelectedClinic.StatusText}"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{Binding SelectedClinic.StatusTextBrush}"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock Grid.Row="4" Text="{DynamicResource Clinics_OrderHistory}" FontSize="18" FontWeight="SemiBold"
+                       Foreground="{StaticResource PrimaryDarkBrush}"
+                       Visibility="{Binding IsClinicSelected, Converter={StaticResource BoolToVis}}"/>
+
+            <Border Grid.Row="6" Background="White" CornerRadius="16"
+                    BorderBrush="#e7e5e4" BorderThickness="1"
+                    Visibility="{Binding IsClinicSelected, Converter={StaticResource BoolToVis}}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.06" Color="#000000"/>
+                </Border.Effect>
+                <DataGrid ItemsSource="{Binding ClinicOrders}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserSortColumns="True"
+                          ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                          Background="Transparent" BorderThickness="0"
+                          RowBackground="White" AlternatingRowBackground="#fafaf9"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#f5f5f4"
+                          SelectionMode="Single" CanUserAddRows="False"
+                          RowHeight="44" FontSize="13" Foreground="#292524">
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Id}" Width="55">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="ID"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="16,0,0,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Name}" Width="*">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Clinics_Col_Product}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Binding="{Binding Amount}" Width="70">
+                            <DataGridTextColumn.Header>
+                                <TextBlock Text="{DynamicResource Clinics_Col_Amount}"/>
+                            </DataGridTextColumn.Header>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="8,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Width="130" SortMemberPath="Status">
+                            <DataGridTemplateColumn.Header>
+                                <TextBlock Text="{DynamicResource Clinics_Col_Status}"/>
+                            </DataGridTemplateColumn.Header>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="6" Padding="10,4" MinWidth="90"
+                                            VerticalAlignment="Center" HorizontalAlignment="Left"
+                                            Margin="8,0" Background="{Binding StatusBadgeBrush}">
+                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11"
+                                                   FontWeight="SemiBold" TextAlignment="Center"
+                                                   Foreground="{Binding StatusTextBrush}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Border>
         </Grid>
     </Grid>
