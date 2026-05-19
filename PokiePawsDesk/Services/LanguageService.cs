@@ -27,7 +27,7 @@ namespace PokiePawsDesk.Services
 
         public static string Get(string key)
         {
-            return Application.Current.Resources[key] as string ?? key;
+            return Application.Current?.Resources[key] as string ?? key;
         }
     }
 }

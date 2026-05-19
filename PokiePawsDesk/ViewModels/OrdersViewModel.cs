@@ -12,8 +12,8 @@ namespace PokiePawsDesk.ViewModels
 {
     public partial class OrdersViewModel : ObservableObject
     {
-        private readonly OrderService _orderService;
-        private readonly ClinicService _clinicService;
+        private readonly IOrderService _orderService;
+        private readonly IClinicService _clinicService;
         private List<Order> _allOrders = new();
         private string? _selectedStatus;
 
@@ -22,7 +22,7 @@ namespace PokiePawsDesk.ViewModels
         [ObservableProperty] private Clinic? selectedClinicFilter;
         [ObservableProperty] private string orderCountText = "";
 
-        public OrdersViewModel(OrderService orderService, ClinicService clinicService)
+        public OrdersViewModel(IOrderService orderService, IClinicService clinicService)
         {
             _orderService = orderService;
             _clinicService = clinicService;

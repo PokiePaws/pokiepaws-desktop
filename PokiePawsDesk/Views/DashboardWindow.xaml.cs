@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PokiePawsDesk.Core;
+using PokiePawsDesk.Models;
 using PokiePawsDesk.Services;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -13,9 +14,9 @@ namespace PokiePawsDesk.Views
     public partial class DashboardWindow : Window
     {
         private readonly AuthService _authService;
-        private readonly OrderService _orderService;
-        private readonly ProductService _productService;
-        private readonly ClinicService _clinicService;
+        private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
+        private readonly IClinicService _clinicService;
         private readonly AppDbContext _db;
         private readonly HttpClient _httpClient;
         private WebSocketService? _webSocketService;
@@ -24,8 +25,8 @@ namespace PokiePawsDesk.Views
         private int _newOrderCount = 0;
         private bool _isOnline = true;
 
-        public DashboardWindow(AuthService authService, OrderService orderService,
-            ProductService productService, ClinicService clinicService,
+        public DashboardWindow(AuthService authService, IOrderService orderService,
+            IProductService productService, IClinicService clinicService,
             AppDbContext db, HttpClient httpClient)
         {
             InitializeComponent();

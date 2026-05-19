@@ -6,7 +6,7 @@ namespace PokiePawsDesk.Views
 {
     public partial class OverviewPage : Page
     {
-        public OverviewPage(OrderService orderService, ProductService productService, ClinicService clinicService)
+        public OverviewPage(IOrderService orderService, IProductService productService, IClinicService clinicService)
         {
             InitializeComponent();
             DataContext = new OverviewViewModel(orderService, productService, clinicService);

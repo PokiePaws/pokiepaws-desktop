@@ -1,23 +1,13 @@
 ﻿using PokiePawsDesk.Core;
 using PokiePawsDesk.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace PokiePawsDesk.Services
 {
-    public class WarehouseWorkerMe
-    {
-        public long WarehouseId { get; set; }
-        public string? WarehouseName { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
-    }
-
-    public class ProductService
+    public class ProductService : IProductService
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _db;
@@ -47,18 +37,6 @@ namespace PokiePawsDesk.Services
         public List<Product> GetLocalProducts()
         {
             return _db.Products.ToList();
-        }
-
-        public async Task<List<Product>> GetLowStockAsync(int threshold = 10)
-        {
-            try
-            {
-                var result = await _httpClient.GetFromJsonAsync<List<Product>>($"/api/warehouse/stock/low-stock?threshold={threshold}");
-                return result ?? _db.Products.Where(p => p.Amount <= threshold).ToList();
-            }
-            catch { }
-
-            return _db.Products.Where(p => p.Amount <= threshold).ToList();
         }
 
         public async Task<long> GetMyWarehouseIdAsync()

@@ -2,30 +2,23 @@
 using PokiePawsDesk.Models;
 using PokiePawsDesk.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PokiePawsDesk.ViewModels
 {
     public partial class ClinicsViewModel : ObservableObject
     {
-        private readonly ClinicService _clinicService;
-        private readonly OrderService _orderService;
+        private readonly IClinicService _clinicService;
+        private readonly IOrderService _orderService;
 
-        [ObservableProperty]
-        private ObservableCollection<Clinic> clinics = new();
+        [ObservableProperty] private ObservableCollection<Clinic> clinics = new();
+        [ObservableProperty] private Clinic? selectedClinic;
+        [ObservableProperty] private ObservableCollection<Order> clinicOrders = new();
+        [ObservableProperty] private bool isClinicSelected = false;
+        [ObservableProperty] private bool isClinicNotSelected = true;
 
-        [ObservableProperty]
-        private Clinic? selectedClinic;
-
-        [ObservableProperty]
-        private ObservableCollection<Order> clinicOrders = new();
-
-        [ObservableProperty]
-        private bool isClinicSelected = false;
-
-        [ObservableProperty]
-        private bool isClinicNotSelected = true;
-
-        public ClinicsViewModel(ClinicService clinicService, OrderService orderService)
+        public ClinicsViewModel(IClinicService clinicService, IOrderService orderService)
         {
             _clinicService = clinicService;
             _orderService = orderService;

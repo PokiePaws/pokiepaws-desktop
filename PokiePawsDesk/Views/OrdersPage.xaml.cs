@@ -8,7 +8,7 @@ namespace PokiePawsDesk.Views
     {
         private readonly OrdersViewModel _viewModel;
 
-        public OrdersPage(OrderService orderService, ClinicService clinicService)
+        public OrdersPage(IOrderService orderService, IClinicService clinicService)
         {
             InitializeComponent();
             _viewModel = new OrdersViewModel(orderService, clinicService);

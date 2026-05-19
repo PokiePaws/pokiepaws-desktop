@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36623.8 d17.14
+VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokiePawsDesk", "PokiePawsDesk\PokiePawsDesk.csproj", "{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokiePawsDesk.Tests", "PokiePawsDesk.Tests\PokiePawsDesk.Tests.csproj", "{FE5F6726-DA33-4F61-972F-FB6585968E9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB71DEEB-C62F-421D-9E00-CC2E06EC6195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE5F6726-DA33-4F61-972F-FB6585968E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5F6726-DA33-4F61-972F-FB6585968E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5F6726-DA33-4F61-972F-FB6585968E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5F6726-DA33-4F61-972F-FB6585968E9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

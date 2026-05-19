@@ -6,7 +6,7 @@ namespace PokiePawsDesk.Views
 {
     public partial class ClinicsPage : Page
     {
-        public ClinicsPage(ClinicService clinicService, OrderService orderService)
+        public ClinicsPage(IClinicService clinicService, IOrderService orderService)
         {
             InitializeComponent();
             DataContext = new ClinicsViewModel(clinicService, orderService);

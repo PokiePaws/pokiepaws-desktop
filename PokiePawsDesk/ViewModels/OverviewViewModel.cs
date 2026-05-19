@@ -10,9 +10,9 @@ namespace PokiePawsDesk.ViewModels
 {
     public partial class OverviewViewModel : ObservableObject
     {
-        private readonly OrderService _orderService;
-        private readonly ProductService _productService;
-        private readonly ClinicService _clinicService;
+        private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
+        private readonly IClinicService _clinicService;
 
         [ObservableProperty] private string pendingCount = "0";
         [ObservableProperty] private string productCount = "0";
@@ -20,7 +20,7 @@ namespace PokiePawsDesk.ViewModels
         [ObservableProperty] private string clinicCount = "0";
         [ObservableProperty] private ObservableCollection<Order> recentOrders = new();
 
-        public OverviewViewModel(OrderService orderService, ProductService productService, ClinicService clinicService)
+        public OverviewViewModel(IOrderService orderService, IProductService productService, IClinicService clinicService)
         {
             _orderService = orderService;
             _productService = productService;

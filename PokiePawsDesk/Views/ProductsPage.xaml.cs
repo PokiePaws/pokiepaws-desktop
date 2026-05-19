@@ -13,7 +13,7 @@ namespace PokiePawsDesk.Views
         private readonly ProductsViewModel _viewModel;
         private DispatcherTimer? _notificationTimer;
 
-        public ProductsPage(ProductService productService)
+        public ProductsPage(IProductService productService)
         {
             InitializeComponent();
             _viewModel = new ProductsViewModel(productService);

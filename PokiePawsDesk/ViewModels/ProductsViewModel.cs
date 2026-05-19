@@ -10,7 +10,7 @@ namespace PokiePawsDesk.ViewModels
 {
     public partial class ProductsViewModel : ObservableObject
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
         private const int LowStockThreshold = 10;
 
         [ObservableProperty] private ObservableCollection<Product> products = new();
@@ -24,7 +24,7 @@ namespace PokiePawsDesk.ViewModels
 
         public long WarehouseId { get; private set; } = 1;
 
-        public ProductsViewModel(ProductService productService)
+        public ProductsViewModel(IProductService productService)
         {
             _productService = productService;
             _ = LoadAsync();

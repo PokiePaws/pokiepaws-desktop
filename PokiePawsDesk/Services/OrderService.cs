@@ -1,7 +1,6 @@
 ﻿using PokiePawsDesk.Core;
 using PokiePawsDesk.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PokiePawsDesk.Services
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly HttpClient _httpClient;
         private readonly AppDbContext _db;

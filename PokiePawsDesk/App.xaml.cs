@@ -45,9 +45,9 @@ namespace PokiePawsDesk
             services.AddSingleton(httpClient);
             services.AddSingleton<AppDbContext>();
             services.AddSingleton<AuthService>();
-            services.AddSingleton<OrderService>();
-            services.AddSingleton<ProductService>();
-            services.AddSingleton<ClinicService>();
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IProductService, ProductService>();
+            services.AddSingleton<IClinicService, ClinicService>();
             services.AddTransient<LoginWindow>();
             services.AddTransient<DashboardWindow>();
         }
