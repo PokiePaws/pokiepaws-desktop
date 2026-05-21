@@ -37,12 +37,27 @@ namespace PokiePawsDesk.Views
             _db = db;
             _httpClient = httpClient;
 
+            _authService.SessionExpired += OnSessionExpired;
+
             _activeNav = BtnOverview;
             UpdateLanguageToggle();
             LoadUserInfo();
             _ = CheckConnectionAsync();
             ConnectWebSocket();
             MainFrame.Navigate(new OverviewPage(_orderService, _productService, _clinicService));
+        }
+
+        private void OnSessionExpired()
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                _authService.RemoveToken();
+                await _db.ClearAllDataAsync();
+
+                var loginWindow = App.Services.GetRequiredService<LoginWindow>();
+                loginWindow.Show();
+                Close();
+            });
         }
 
         private void UpdateLanguageToggle()
@@ -132,7 +147,7 @@ namespace PokiePawsDesk.Views
             var token = _authService.GetToken();
             if (token == null) return;
 
-            _webSocketService = new WebSocketService("ws://localhost:9090/ws", token);
+            _webSocketService = new WebSocketService(AppConfig.WebSocketUrl, token);
             _webSocketService.OnNewOrder += OnNewOrderReceived;
             _ = _webSocketService.ConnectAsync();
         }
@@ -217,6 +232,8 @@ namespace PokiePawsDesk.Views
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
+            _authService.SessionExpired -= OnSessionExpired;
+
             if (_webSocketService != null)
                 await _webSocketService.DisconnectAsync();
 
@@ -225,11 +242,13 @@ namespace PokiePawsDesk.Views
 
             var loginWindow = App.Services.GetRequiredService<LoginWindow>();
             loginWindow.Show();
-            this.Close();
+            Close();
         }
 
         private async void Window_Closed(object sender, EventArgs e)
         {
+            _authService.SessionExpired -= OnSessionExpired;
+
             if (_webSocketService != null)
                 await _webSocketService.DisconnectAsync();
         }

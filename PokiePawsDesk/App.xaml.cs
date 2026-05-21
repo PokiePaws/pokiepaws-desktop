@@ -24,9 +24,6 @@ namespace PokiePawsDesk
             var db = Services.GetRequiredService<AppDbContext>();
             db.Database.Migrate();
 
-            var auth = Services.GetRequiredService<AuthService>();
-            auth.RestoreToken();
-
             var loginWindow = Services.GetRequiredService<LoginWindow>();
             loginWindow.Show();
         }
@@ -39,12 +36,26 @@ namespace PokiePawsDesk
 
         private void ConfigureServices(IServiceCollection services)
         {
-            var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:9090") };
-            httpClient.Timeout = TimeSpan.FromSeconds(30);
+            var baseUri = new Uri(AppConfig.ApiBaseUrl);
 
-            services.AddSingleton(httpClient);
+            var authHttpClient = new HttpClient
+            {
+                BaseAddress = baseUri,
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+
+            var authService = new AuthService(authHttpClient);
+            services.AddSingleton(authService);
+
+            var authHandler = new AuthHandler(authService);
+            var mainHttpClient = new HttpClient(authHandler)
+            {
+                BaseAddress = baseUri,
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+
+            services.AddSingleton(mainHttpClient);
             services.AddSingleton<AppDbContext>();
-            services.AddSingleton<AuthService>();
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<IProductService, ProductService>();
             services.AddSingleton<IClinicService, ClinicService>();
