@@ -29,6 +29,9 @@ namespace PokiePawsDesk.Services
         private const string AccessTokenKey = "PokiePaws_JWT";
         private const string RefreshTokenKey = "PokiePaws_Refresh";
 
+        private string? _accessTokenCache;
+        private string? _refreshTokenCache;
+
         public event Action? SessionExpired;
 
         public AuthService(HttpClient httpClient)
@@ -47,9 +50,16 @@ namespace PokiePawsDesk.Services
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (result?.Token == null) return null;
 
-                SaveCredential(AccessTokenKey, result.Token);
-                if (result.RefreshToken != null)
-                    SaveCredential(RefreshTokenKey, result.RefreshToken);
+                _accessTokenCache = result.Token;
+                _refreshTokenCache = result.RefreshToken;
+
+                try
+                {
+                    SaveCredential(AccessTokenKey, result.Token);
+                    if (result.RefreshToken != null)
+                        SaveCredential(RefreshTokenKey, result.RefreshToken);
+                }
+                catch { }
 
                 return result;
             }
@@ -60,7 +70,7 @@ namespace PokiePawsDesk.Services
         {
             try
             {
-                var refreshToken = GetCredential(RefreshTokenKey);
+                var refreshToken = _refreshTokenCache ?? GetCredential(RefreshTokenKey);
                 if (refreshToken == null) return null;
 
                 var response = await _httpClient.PostAsJsonAsync("/api/auth/refresh",
@@ -70,9 +80,16 @@ namespace PokiePawsDesk.Services
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (result?.Token == null) return null;
 
-                SaveCredential(AccessTokenKey, result.Token);
-                if (result.RefreshToken != null)
-                    SaveCredential(RefreshTokenKey, result.RefreshToken);
+                _accessTokenCache = result.Token;
+                _refreshTokenCache = result.RefreshToken;
+
+                try
+                {
+                    SaveCredential(AccessTokenKey, result.Token);
+                    if (result.RefreshToken != null)
+                        SaveCredential(RefreshTokenKey, result.RefreshToken);
+                }
+                catch { }
 
                 return result.Token;
             }
@@ -81,12 +98,14 @@ namespace PokiePawsDesk.Services
 
         public void RaiseSessionExpired() => SessionExpired?.Invoke();
 
-        public string? GetToken() => GetCredential(AccessTokenKey);
+        public string? GetToken() => _accessTokenCache ?? GetCredential(AccessTokenKey);
 
         public void RemoveToken()
         {
-            new Credential { Target = AccessTokenKey }.Delete();
-            new Credential { Target = RefreshTokenKey }.Delete();
+            _accessTokenCache = null;
+            _refreshTokenCache = null;
+            try { new Credential { Target = AccessTokenKey }.Delete(); } catch { }
+            try { new Credential { Target = RefreshTokenKey }.Delete(); } catch { }
         }
 
         private static void SaveCredential(string key, string value)
