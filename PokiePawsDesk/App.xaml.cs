@@ -24,8 +24,19 @@ namespace PokiePawsDesk
             var db = Services.GetRequiredService<AppDbContext>();
             db.Database.Migrate();
 
-            var loginWindow = Services.GetRequiredService<LoginWindow>();
-            loginWindow.Show();
+            var authService = Services.GetRequiredService<AuthService>();
+            var existingToken = authService.GetToken();
+
+            if (existingToken != null)
+            {
+                var dashboard = Services.GetRequiredService<DashboardWindow>();
+                dashboard.Show();
+            }
+            else
+            {
+                var loginWindow = Services.GetRequiredService<LoginWindow>();
+                loginWindow.Show();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

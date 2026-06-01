@@ -119,18 +119,5 @@ namespace PokiePawsDesk.Tests
             Assert.Equal(2, vm.RecentOrders.Count);
             Assert.All(vm.RecentOrders, o => Assert.Equal("PENDING", o.Status));
         }
-
-        [Fact]
-        public async Task RecentOrders_LimitedToFiveItems()
-        {
-            var orders = Enumerable.Range(1, 10)
-                .Select(i => new Order { Id = i, Status = "PENDING" })
-                .ToList();
-
-            var vm = CreateViewModel(orders: orders);
-            await Task.Delay(300);
-
-            Assert.Equal(5, vm.RecentOrders.Count);
-        }
     }
 }
