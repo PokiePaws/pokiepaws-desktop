@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PokiePawsDesk.Core;
+using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -16,14 +17,14 @@ namespace PokiePawsDesk.Services
         public event Action? OnDisconnected;
 
         private readonly string _url;
-        private readonly string _token;
+        private readonly Func<string?> _getToken;
 
         private static readonly int[] BackoffSeconds = { 2, 4, 8, 16, 32, 60 };
 
-        public WebSocketService(string url, string token)
+        public WebSocketService(string url, Func<string?> getToken)
         {
             _url = url;
-            _token = token;
+            _getToken = getToken;
         }
 
         public async Task ConnectAsync()
@@ -41,6 +42,9 @@ namespace PokiePawsDesk.Services
             {
                 try
                 {
+                    var token = _getToken();
+                    if (token == null) break;
+
                     _ws = new ClientWebSocket();
                     await _ws.ConnectAsync(new Uri(_url), _cts.Token);
                     attempt = 0;
@@ -49,7 +53,7 @@ namespace PokiePawsDesk.Services
                     {
                         "accept-version:1.2",
                         "heart-beat:0,0",
-                        $"Authorization:Bearer {_token}"
+                        $"Authorization:Bearer {token}",
                     });
 
                     await ReceiveLoopAsync();
@@ -58,8 +62,9 @@ namespace PokiePawsDesk.Services
                 {
                     break;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    AppLogger.LogWarning($"WebSocket error: {ex.Message}");
                 }
 
                 if (_cts.Token.IsCancellationRequested)
@@ -83,12 +88,12 @@ namespace PokiePawsDesk.Services
 
         public async Task DisconnectAsync()
         {
-            _cts.Cancel();
+            await _cts.CancelAsync();
             if (_ws?.State == WebSocketState.Open)
             {
                 try
                 {
-                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                    await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
                 }
                 catch { }
             }
@@ -96,12 +101,25 @@ namespace PokiePawsDesk.Services
 
         private async Task ReceiveLoopAsync()
         {
-            var buffer = new byte[8192];
+            var buffer = new byte[65536];
             var builder = new StringBuilder();
 
             while (_ws?.State == WebSocketState.Open && !_cts.Token.IsCancellationRequested)
             {
-                var result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), _cts.Token);
+                WebSocketReceiveResult result;
+                try
+                {
+                    result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), _cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.LogWarning($"WebSocket receive error: {ex.Message}");
+                    break;
+                }
 
                 if (result.MessageType == WebSocketMessageType.Close)
                     break;
@@ -111,27 +129,38 @@ namespace PokiePawsDesk.Services
                 if (!result.EndOfMessage)
                     continue;
 
-                HandleFrame(builder.ToString());
+                var frame = builder.ToString();
                 builder.Clear();
+
+                if (!string.IsNullOrWhiteSpace(frame))
+                    HandleFrame(frame);
             }
         }
 
         private void HandleFrame(string frame)
         {
-            if (frame.StartsWith("CONNECTED"))
+            var trimmed = frame.TrimStart('\n', '\r');
+
+            if (trimmed.StartsWith("CONNECTED", StringComparison.Ordinal))
             {
                 OnConnected?.Invoke();
                 _ = SendFrameAsync("SUBSCRIBE", new[]
                 {
                     "id:sub-orders",
-                    "destination:/topic/orders"
+                    "destination:/topic/orders",
                 });
             }
-            else if (frame.StartsWith("MESSAGE"))
+            else if (trimmed.StartsWith("MESSAGE", StringComparison.Ordinal))
             {
-                var sep = frame.IndexOf("\n\n");
+                var sep = trimmed.IndexOf("\n\n", StringComparison.Ordinal);
+                if (sep < 0)
+                    sep = trimmed.IndexOf("\r\n\r\n", StringComparison.Ordinal);
                 if (sep < 0) return;
-                var body = frame.Substring(sep + 2).TrimEnd('\0');
+
+                var body = sep + 2 <= trimmed.Length
+                    ? trimmed.Substring(sep + 2).TrimEnd('\0', '\n', '\r')
+                    : string.Empty;
+
                 if (!string.IsNullOrWhiteSpace(body))
                     OnNewOrder?.Invoke(body);
             }
@@ -142,7 +171,14 @@ namespace PokiePawsDesk.Services
             if (_ws?.State != WebSocketState.Open) return;
             var frame = command + "\n" + string.Join("\n", headers) + "\n\n" + body + "\0";
             var bytes = Encoding.UTF8.GetBytes(frame);
-            await _ws.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, _cts.Token);
+            try
+            {
+                await _ws.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, _cts.Token);
+            }
+            catch (Exception ex)
+            {
+                AppLogger.LogWarning($"WebSocket send error: {ex.Message}");
+            }
         }
     }
 }

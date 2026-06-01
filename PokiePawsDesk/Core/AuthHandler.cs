@@ -9,7 +9,8 @@ namespace PokiePawsDesk.Core
     {
         private readonly AuthService _authService;
 
-        public AuthHandler(AuthService authService) : base(new HttpClientHandler())
+        public AuthHandler(AuthService authService, HttpMessageHandler? inner = null)
+            : base(inner ?? new HttpClientHandler())
         {
             _authService = authService;
         }

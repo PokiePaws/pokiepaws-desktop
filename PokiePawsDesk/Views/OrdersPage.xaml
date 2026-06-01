@@ -162,26 +162,26 @@
                                         <Button Content="{DynamicResource Orders_Action_Start}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#dbeafe" Foreground="#1e40af"
-                                                Visibility="{Binding PendingActionsVisibility}"
+                                                Visibility="{Binding PendingVisible}"
                                                 Command="{Binding DataContext.StartOrderCommand, ElementName=ThisPage}"
                                                 CommandParameter="{Binding}"
                                                 Margin="0,0,6,0"/>
                                         <Button Content="{DynamicResource Orders_Action_Reject}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#fee2e2" Foreground="#991b1b"
-                                                Visibility="{Binding PendingActionsVisibility}"
+                                                Visibility="{Binding PendingVisible}"
                                                 Command="{Binding DataContext.RejectOrderCommand, ElementName=ThisPage}"
                                                 CommandParameter="{Binding}"/>
                                         <Button Content="{DynamicResource Orders_Action_Ship}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#ede9fe" Foreground="#5b21b6"
-                                                Visibility="{Binding InProgressActionsVisibility}"
+                                                Visibility="{Binding InProgressVisible}"
                                                 Command="{Binding DataContext.ShipOrderCommand, ElementName=ThisPage}"
                                                 CommandParameter="{Binding}"/>
                                         <Button Content="{DynamicResource Orders_Action_Confirm}"
                                                 Style="{StaticResource SmallActionBtn}"
                                                 Background="#d1fae5" Foreground="#065f46"
-                                                Visibility="{Binding ShippedActionsVisibility}"
+                                                Visibility="{Binding ShippedVisible}"
                                                 Command="{Binding DataContext.ConfirmOrderCommand, ElementName=ThisPage}"
                                                 CommandParameter="{Binding}"/>
                                     </StackPanel>

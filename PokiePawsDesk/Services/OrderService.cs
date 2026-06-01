@@ -37,8 +37,10 @@ namespace PokiePawsDesk.Services
                     return orders;
                 }
             }
-            catch { }
-
+            catch (Exception ex)
+            {
+                AppLogger.LogError("[OrderService] GetOrdersAsync failed", ex);
+            }
             return _db.Orders.ToList();
         }
 

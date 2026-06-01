@@ -6,7 +6,7 @@ namespace PokiePawsDesk.Services
     {
         Task<List<Product>> GetProductsAsync();
         List<Product> GetLocalProducts();
-        Task<long> GetMyWarehouseIdAsync();
+        Task<long> GetWarehouseIdAsync();
         Task<Product?> CreateAsync(Product product);
         Task<Product?> UpdateAsync(Product product);
         Task DeleteAsync(long id);

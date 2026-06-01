@@ -19,6 +19,7 @@ namespace PokiePawsDesk.ViewModels
         [ObservableProperty] private string lowStockCount = "0";
         [ObservableProperty] private string clinicCount = "0";
         [ObservableProperty] private ObservableCollection<Order> recentOrders = new();
+        [ObservableProperty] private ObservableCollection<Product> lowStockProducts = new();
 
         public OverviewViewModel(IOrderService orderService, IProductService productService, IClinicService clinicService)
         {
@@ -44,7 +45,8 @@ namespace PokiePawsDesk.ViewModels
             ProductCount = products.Count.ToString();
             LowStockCount = products.Count(p => p.Amount <= 10).ToString();
             ClinicCount = clinics.Count(c => c.Active).ToString();
-            RecentOrders = new ObservableCollection<Order>(orders.Where(o => o.Status == "PENDING").Take(5));
+            RecentOrders = new ObservableCollection<Order>(orders.Where(o => o.Status == "PENDING"));
+            LowStockProducts = new ObservableCollection<Product>(products.Where(p => p.Amount <= 10).OrderBy(p => p.Amount));
         }
     }
 }

@@ -29,8 +29,10 @@ namespace PokiePawsDesk.Services
                     return products;
                 }
             }
-            catch { }
-
+            catch (Exception ex)
+            {
+                AppLogger.LogError("[ProductService] GetProductsAsync failed", ex);
+            }
             return _db.Products.ToList();
         }
 
@@ -39,14 +41,18 @@ namespace PokiePawsDesk.Services
             return _db.Products.ToList();
         }
 
-        public async Task<long> GetMyWarehouseIdAsync()
+        public async Task<long> GetWarehouseIdAsync()
         {
             try
             {
                 var me = await _httpClient.GetFromJsonAsync<WarehouseWorkerMe>("/api/warehouse-workers/me");
                 return me?.WarehouseId ?? 1;
             }
-            catch { return 1; }
+            catch (Exception ex)
+            {
+                AppLogger.LogError("[ProductService] GetWarehouseIdAsync failed", ex);
+                return 1;
+            }
         }
 
         public async Task<Product?> CreateAsync(Product product)

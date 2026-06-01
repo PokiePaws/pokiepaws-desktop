@@ -41,29 +41,31 @@ namespace PokiePawsDesk.Services
 
         public async Task<LoginResponse?> LoginAsync(string email, string password)
         {
+            var response = await _httpClient.PostAsJsonAsync("/api/auth/login",
+                new LoginRequest { Email = email, Password = password });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                throw new Exception($"HTTP {(int)response.StatusCode}: {body}");
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            if (result?.Token == null)
+                return null;
+
+            _accessTokenCache = result.Token;
+            _refreshTokenCache = result.RefreshToken;
+
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("/api/auth/login",
-                    new LoginRequest { Email = email, Password = password });
-                if (!response.IsSuccessStatusCode) return null;
-
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                if (result?.Token == null) return null;
-
-                _accessTokenCache = result.Token;
-                _refreshTokenCache = result.RefreshToken;
-
-                try
-                {
-                    SaveCredential(AccessTokenKey, result.Token);
-                    if (result.RefreshToken != null)
-                        SaveCredential(RefreshTokenKey, result.RefreshToken);
-                }
-                catch { }
-
-                return result;
+                SaveCredential(AccessTokenKey, result.Token);
+                if (result.RefreshToken != null)
+                    SaveCredential(RefreshTokenKey, result.RefreshToken);
             }
-            catch { return null; }
+            catch { }
+
+            return result;
         }
 
         public async Task<string?> RefreshTokenAsync()

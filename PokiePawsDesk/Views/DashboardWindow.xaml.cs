@@ -147,7 +147,7 @@ namespace PokiePawsDesk.Views
             var token = _authService.GetToken();
             if (token == null) return;
 
-            _webSocketService = new WebSocketService(AppConfig.WebSocketUrl, token);
+            _webSocketService = new WebSocketService(AppConfig.WebSocketUrl, _authService.GetToken);
             _webSocketService.OnNewOrder += OnNewOrderReceived;
             _ = _webSocketService.ConnectAsync();
         }

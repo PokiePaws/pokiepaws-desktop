@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using System.Windows.Media;
+using PokiePawsDesk.Core;
 
 namespace PokiePawsDesk.Models
 {
@@ -14,6 +15,7 @@ namespace PokiePawsDesk.Models
         public string? Unit { get; set; }
         public string? Category { get; set; }
         public int Amount { get; set; }
+        [JsonConverter(typeof(DateOnlyConverter))]
         public DateTime? ExpiryDate { get; set; }
         public string? Status { get; set; }
 

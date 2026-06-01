@@ -6,6 +6,10 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<AnalysisMode>All</AnalysisMode>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -21,7 +25,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
-		<PackageReference Include="CredentialManagement" Version="1.0.2" />
+		<PackageReference Include="CredentialManagement" Version="1.0.2">
+			<NoWarn>NU1701</NoWarn>
+		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.14" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.14">
 			<PrivateAssets>all</PrivateAssets>
@@ -31,7 +37,12 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.0" />
+		
 	</ItemGroup>
 
 	<ItemGroup>

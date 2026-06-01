@@ -18,9 +18,9 @@ namespace PokiePawsDesk.ViewModels
         [ObservableProperty] private List<string> availableCategories = new();
         [ObservableProperty] private List<string> availableUnits = new();
         [ObservableProperty] private Product? selectedProduct;
-        [ObservableProperty] private bool lowStockIndicatorVisible = false;
-        [ObservableProperty] private string lowStockIndicatorText = "";
-        [ObservableProperty] private string lowStockSubtitleText = "";
+        [ObservableProperty] private bool lowStockVisible = false;
+        [ObservableProperty] private string lowStockText = "";
+        [ObservableProperty] private string lowStockSubtitle = "";
 
         public long WarehouseId { get; private set; } = 1;
 
@@ -40,7 +40,7 @@ namespace PokiePawsDesk.ViewModels
                 CheckLowStock();
             }
 
-            WarehouseId = await _productService.GetMyWarehouseIdAsync();
+            WarehouseId = await _productService.GetWarehouseIdAsync();
             var fresh = await _productService.GetProductsAsync();
             Products = new ObservableCollection<Product>(fresh);
             RefreshFilters();
@@ -71,13 +71,13 @@ namespace PokiePawsDesk.ViewModels
 
             if (low.Count == 0)
             {
-                LowStockIndicatorVisible = false;
+                LowStockVisible = false;
                 return;
             }
 
-            LowStockIndicatorText = $"{low.Count} {LanguageService.Get("Products_LowStock_Badge")}";
-            LowStockSubtitleText = $"{low.Count} {LanguageService.Get("Products_LowStock_Subtitle")}";
-            LowStockIndicatorVisible = true;
+            LowStockText = $"{low.Count} {LanguageService.Get("Products_LowStock_Badge")}";
+            LowStockSubtitle = $"{low.Count} {LanguageService.Get("Products_LowStock_Subtitle")}";
+            LowStockVisible = true;
         }
 
         public async Task AddProductAsync()
@@ -124,7 +124,13 @@ namespace PokiePawsDesk.ViewModels
         public async Task UpdateProductAsync(Product product)
         {
             product.WarehouseId = WarehouseId;
-            await _productService.UpdateAsync(product);
+            var updated = await _productService.UpdateAsync(product);
+            if (updated != null)
+            {
+                var idx = Products.IndexOf(product);
+                if (idx >= 0)
+                    Products[idx] = updated;
+            }
             RefreshFilters();
             CheckLowStock();
         }

@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Media;
+using PokiePawsDesk.Core;
 using PokiePawsDesk.Services;
 
 namespace PokiePawsDesk.Models
@@ -17,6 +18,7 @@ namespace PokiePawsDesk.Models
         public string? Category { get; set; }
         public string? Status { get; set; }
         public string? Unit { get; set; }
+        [JsonConverter(typeof(DateOnlyConverter))]
         public DateTime? ExpiryDate { get; set; }
 
         [JsonIgnore]
@@ -53,15 +55,15 @@ namespace PokiePawsDesk.Models
         };
 
         [JsonIgnore]
-        public Visibility PendingActionsVisibility =>
+        public Visibility PendingVisible =>
             Status == "PENDING" ? Visibility.Visible : Visibility.Collapsed;
 
         [JsonIgnore]
-        public Visibility InProgressActionsVisibility =>
+        public Visibility InProgressVisible =>
             Status == "IN_PROGRESS" ? Visibility.Visible : Visibility.Collapsed;
 
         [JsonIgnore]
-        public Visibility ShippedActionsVisibility =>
+        public Visibility ShippedVisible =>
             Status == "SHIPPED" ? Visibility.Visible : Visibility.Collapsed;
     }
 }

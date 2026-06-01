@@ -19,7 +19,7 @@ namespace PokiePawsDesk.Tests
         {
             var mock = new Mock<IProductService>();
             mock.Setup(x => x.GetLocalProducts()).Returns(new List<Product>());
-            mock.Setup(x => x.GetMyWarehouseIdAsync()).ReturnsAsync(1L);
+            mock.Setup(x => x.GetWarehouseIdAsync()).ReturnsAsync(1L);
             mock.Setup(x => x.GetProductsAsync()).ReturnsAsync(_testProducts);
             return (new ProductsViewModel(mock.Object), mock);
         }
@@ -43,11 +43,11 @@ namespace PokiePawsDesk.Tests
         }
 
         [Fact]
-        public async Task LowStockIndicatorVisible_TrueWhenProductsBelowThreshold()
+        public async Task LowStockVisible_TrueWhenProductsBelowThreshold()
         {
             var (vm, _) = Build();
             await Task.Delay(300);
-            Assert.True(vm.LowStockIndicatorVisible);
+            Assert.True(vm.LowStockVisible);
         }
 
         [Fact]
@@ -60,7 +60,7 @@ namespace PokiePawsDesk.Tests
         }
 
         [Fact]
-        public async Task LowStockIndicatorVisible_FalseWhenNoLowStockProducts()
+        public async Task LowStockVisible_FalseWhenNoLowStockProducts()
         {
             var mock = new Mock<IProductService>();
             var highStock = new List<Product>
@@ -69,11 +69,11 @@ namespace PokiePawsDesk.Tests
                 new() { Id = 2, Name = "B", Category = "Leki", Unit = "szt", Amount = 200 },
             };
             mock.Setup(x => x.GetLocalProducts()).Returns(new List<Product>());
-            mock.Setup(x => x.GetMyWarehouseIdAsync()).ReturnsAsync(1L);
+            mock.Setup(x => x.GetWarehouseIdAsync()).ReturnsAsync(1L);
             mock.Setup(x => x.GetProductsAsync()).ReturnsAsync(highStock);
             var vm = new ProductsViewModel(mock.Object);
             await Task.Delay(300);
-            Assert.False(vm.LowStockIndicatorVisible);
+            Assert.False(vm.LowStockVisible);
         }
 
         [Fact]
