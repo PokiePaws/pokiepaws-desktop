@@ -46,6 +46,7 @@ namespace PokiePawsDesk.Services
                     if (token == null) break;
 
                     _ws = new ClientWebSocket();
+                    _ws.Options.SetRequestHeader("Authorization", $"Bearer {token}");
                     await _ws.ConnectAsync(new Uri(_url), _cts.Token);
                     attempt = 0;
 
