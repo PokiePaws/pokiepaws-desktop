@@ -155,28 +155,40 @@ namespace PokiePawsDesk.Views
 
         private void OnNewOrderReceived(string json)
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(async () =>
             {
-                _newOrderCount++;
-                OrdersBadge.Visibility = Visibility.Visible;
-                OrdersBadgeText.Text = _newOrderCount.ToString();
-
-                string text = LanguageService.Get("Notification_NewOrder");
                 try
                 {
                     using var doc = JsonDocument.Parse(json);
                     var root = doc.RootElement;
+
+                    if (!root.TryGetProperty("status", out var statusProp) ||
+                        statusProp.GetString() != "PENDING")
+                        return;
+
+                    if (root.TryGetProperty("id", out var idProp))
+                    {
+                        var id = idProp.GetInt64();
+                        var existing = _orderService.GetLocalOrders().Any(o => o.Id == id);
+                        if (existing) return;
+                    }
+
+                    _newOrderCount++;
+                    OrdersBadge.Visibility = Visibility.Visible;
+                    OrdersBadgeText.Text = _newOrderCount.ToString();
+
+                    string text = LanguageService.Get("Notification_NewOrder");
                     if (root.TryGetProperty("clinicName", out var clinic) &&
                         clinic.GetString() is string clinicName &&
                         !string.IsNullOrWhiteSpace(clinicName))
                     {
                         text = $"{LanguageService.Get("Notification_NewOrderFrom")} {clinicName}";
                     }
+
+                    NotificationText.Text = text;
+                    NotificationBanner.Visibility = Visibility.Visible;
                 }
                 catch { }
-
-                NotificationText.Text = text;
-                NotificationBanner.Visibility = Visibility.Visible;
             });
         }
 
