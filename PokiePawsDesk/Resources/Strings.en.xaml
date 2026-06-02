@@ -56,6 +56,7 @@
     <s:String x:Key="Orders_RejectConfirm">Are you sure you want to reject order</s:String>
     <s:String x:Key="Orders_RejectTitle">Reject order</s:String>
     <s:String x:Key="Orders_Error">Failed to update order status.</s:String>
+    <s:String x:Key="Orders_Col_Description">Order description</s:String>
     <s:String x:Key="Error_Title">Error</s:String>
 
     <s:String x:Key="Products_Title">Product Catalog</s:String>
@@ -103,5 +104,6 @@
     <s:String x:Key="Status_Rejected">Rejected</s:String>
     <s:String x:Key="Clinic_Active">Active</s:String>
     <s:String x:Key="Clinic_Suspended">Suspended</s:String>
+    
 
 </ResourceDictionary>

@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PokiePawsDesk.Views
@@ -177,6 +178,15 @@ namespace PokiePawsDesk.Views
                 NotificationText.Text = text;
                 NotificationBanner.Visibility = Visibility.Visible;
             });
+        }
+
+        private void NotificationBanner_Click(object sender, MouseButtonEventArgs e)
+        {
+            SetActive(BtnOrders);
+            _newOrderCount = 0;
+            OrdersBadge.Visibility = Visibility.Collapsed;
+            NotificationBanner.Visibility = Visibility.Collapsed;
+            MainFrame.Navigate(new OrdersPage(_orderService, _clinicService));
         }
 
         private void DismissNotification_Click(object sender, RoutedEventArgs e)

@@ -195,7 +195,9 @@
             <Border x:Name="NotificationBanner" Grid.Row="0"
                     Background="#dbeafe" Padding="16,10"
                     BorderBrush="#bfdbfe" BorderThickness="0,0,0,1"
-                    Visibility="Collapsed">
+                    Visibility="Collapsed"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="NotificationBanner_Click">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

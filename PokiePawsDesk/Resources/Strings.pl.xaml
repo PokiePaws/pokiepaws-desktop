@@ -56,6 +56,7 @@
     <s:String x:Key="Orders_RejectConfirm">Czy na pewno odrzucić zamówienie</s:String>
     <s:String x:Key="Orders_RejectTitle">Odrzucenie zamówienia</s:String>
     <s:String x:Key="Orders_Error">Nie udało się zaktualizować statusu zamówienia.</s:String>
+    <s:String x:Key="Orders_Col_Description">Opis zamówienia</s:String>
     <s:String x:Key="Error_Title">Błąd</s:String>
 
     <s:String x:Key="Products_Title">Katalog produktów</s:String>

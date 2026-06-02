@@ -9,17 +9,17 @@
         Background="{StaticResource AppBgBrush}"
         FontFamily="Segoe UI">
 
-    <Grid VerticalAlignment="Center" Margin="36,0">
+    <Grid VerticalAlignment="Center" Margin="32,0">
         <StackPanel>
 
-            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,24">
+            <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,6">
-                    <Image Source="/Assets/logo.png" Width="32" Height="32"
+                    <Image Source="/Assets/logo.png" Width="36" Height="36"
                            VerticalAlignment="Center" Margin="0,0,8,0"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock VerticalAlignment="Center">
-                        <Run Text="Pokie" Foreground="#d4585b" FontSize="26" FontWeight="Bold"/>
-                        <Run Text="Paws" Foreground="#335f7d" FontSize="26" FontWeight="Bold"/>
+                        <Run Text="Pokie" Foreground="#d4585b" FontSize="28" FontWeight="Bold"/>
+                        <Run Text="Paws" Foreground="#335f7d" FontSize="28" FontWeight="Bold"/>
                     </TextBlock>
                 </StackPanel>
                 <TextBlock Text="{DynamicResource Login_Subtitle}" FontSize="12"
@@ -27,30 +27,30 @@
                            HorizontalAlignment="Center"/>
             </StackPanel>
 
-            <Border Background="White" CornerRadius="16" Padding="24,20">
+            <Border Background="White" CornerRadius="16" Padding="28,22">
                 <Border.Effect>
                     <DropShadowEffect Color="#000" BlurRadius="16" ShadowDepth="2" Opacity="0.07"/>
                 </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="{DynamicResource Login_Title}" FontSize="17" FontWeight="Bold"
+                    <TextBlock Text="{DynamicResource Login_Title}" FontSize="18" FontWeight="Bold"
                                Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
                     <TextBlock Text="{DynamicResource Login_Description}"
                                FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
-                               TextWrapping="Wrap" Margin="0,0,0,18"/>
+                               TextWrapping="Wrap" Margin="0,0,0,20"/>
 
                     <TextBlock Text="{DynamicResource Login_Email}" FontSize="11" FontWeight="SemiBold"
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-                    <TextBox x:Name="EmailBox" Padding="12,8" Margin="0,0,0,12"/>
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+                    <TextBox x:Name="EmailBox" Padding="12,9" Margin="0,0,0,14"/>
 
                     <TextBlock Text="{DynamicResource Login_Password}" FontSize="11" FontWeight="SemiBold"
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-                    <PasswordBox x:Name="PasswordBox" Padding="12,8" Margin="0,0,0,6"/>
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
+                    <PasswordBox x:Name="PasswordBox" Padding="12,9" Margin="0,0,0,6"/>
 
                     <TextBlock x:Name="ErrorText" Text="" Foreground="#dc2626"
-                               FontSize="12" Margin="0,0,0,12" TextWrapping="Wrap"/>
+                               FontSize="12" Margin="0,0,0,14" TextWrapping="Wrap"/>
 
                     <Button Style="{StaticResource PrimaryBtn}" Content="{DynamicResource Login_Button}"
-                            HorizontalAlignment="Stretch" Height="40"
+                            HorizontalAlignment="Stretch" Height="42"
                             Click="LoginButton_Click"/>
                 </StackPanel>
             </Border>

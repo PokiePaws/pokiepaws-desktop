@@ -1,6 +1,8 @@
-using PokiePawsDesk.Services;
+﻿using PokiePawsDesk.Services;
 using PokiePawsDesk.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace PokiePawsDesk.Views
 {
@@ -22,6 +24,20 @@ namespace PokiePawsDesk.Views
                 _viewModel.SetStatusFilter(item.Tag?.ToString());
             else
                 _viewModel.SetStatusFilter(null);
+        }
+
+        private void ExpandRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton btn)
+            {
+                var row = DataGridRow.GetRowContainingElement(btn);
+                if (row != null)
+                {
+                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible
+                        ? Visibility.Collapsed
+                        : Visibility.Visible;
+                }
+            }
         }
     }
 }

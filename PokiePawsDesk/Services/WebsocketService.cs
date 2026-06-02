@@ -46,7 +46,6 @@ namespace PokiePawsDesk.Services
                     if (token == null) break;
 
                     _ws = new ClientWebSocket();
-                    _ws.Options.SetRequestHeader("Authorization", $"Bearer {token}");
                     await _ws.ConnectAsync(new Uri(_url), _cts.Token);
                     attempt = 0;
 
@@ -148,7 +147,7 @@ namespace PokiePawsDesk.Services
                 _ = SendFrameAsync("SUBSCRIBE", new[]
                 {
                     "id:sub-orders",
-                    "destination:/topic/orders",
+                    "destination:/topic/warehouse/orders",
                 });
             }
             else if (trimmed.StartsWith("MESSAGE", StringComparison.Ordinal))
